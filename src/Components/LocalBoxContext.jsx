@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { createContext } from "react";
 
-export const localbox = createContext({
+export const localBox = createContext({
   add: () => {},
   list: [],
   updateData: () => {},
   deleteData: () => {},
-  eidtValue: null,
+  editValue: null,
   balance: 0,
   credit: 0,
   debit: 0,
@@ -18,26 +18,26 @@ const LocalBoxContext = ({ children }) => {
       id: 1,
       title: "Salary",
       amount: "100000",
-      category: "Generel",
+      category: "General",
       type: "Credit",
     },
   ];
 
-  const [data, setData] = () => {
+  const [data, setData] = useState(() => {
     const saved = localStorage.getItem("localBox");
 
     return saved ? JSON.parse(saved) : initialState;
-  };
+  });
 
-  const [eidtValue, setEditValue] = useState(null);
+  const [editValue, setEditValue] = useState(null);
 
   const add = (input) => {
     if (!input.title || !input.amount || !input.category || !input.type) {
       alert("please fill all the data required");
-    } else if (eidtValue) {
+    } else if (editValue) {
       setData((prev) =>
         prev.map((d) =>
-          d.id === eidtValue.id
+          d.id === editValue.id
             ? {
                 ...d,
                 title: input.title,
@@ -66,7 +66,7 @@ const LocalBoxContext = ({ children }) => {
 
   const updateData = (id) => {
     const updateVal = data.find((d) => d.id == id);
-
+    // console.log("update", updateVal);
     setEditValue(updateVal);
   };
 
@@ -76,18 +76,40 @@ const LocalBoxContext = ({ children }) => {
     setData(remainData);
   };
 
+  const debit = data
+    .filter((d) => d.type === "debit")
+    .reduce((acc, curr) => {
+      acc += Number(curr.amount);
+      return acc;
+    }, 0);
+
+  const credit = data
+    .filter((d) => d.type === "credit")
+    .reduce((acc, curr) => {
+      acc += Number(curr.amount);
+      return acc;
+    }, 0);
+
+  const balance = credit - debit;
+
+  console.log("debit", debit);
+
+  console.log("credit", credit);
+
+  console.log("balance", balance);
+
   const value = {
     add,
     list: data,
     updateData,
-    eidtValue,
+    editValue,
     deleteData,
     credit,
     debit,
     balance,
   };
 
-  return <localbox.Provider value={value}> {children} </localbox.Provider>;
+  return <localBox.Provider value={value}> {children} </localBox.Provider>;
 };
 
 export default LocalBoxContext;

@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
-import { localbox } from "./LocalBoxContext";
+import React, { useState, useContext, useEffect } from "react";
+import { localBox } from "./LocalBoxContext";
+import LocalBoxData from "./LocalBoxData";
 
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -7,8 +8,13 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
+
 const LocalBoxForm = () => {
-  const { add } = useContext(localbox);
+  const { add, editValue } = useContext(localBox);
+
+   useEffect(() => {
+    editValue ? setInput(editValue) : "";
+  }, [editValue]);
 
   const [input, setInput] = useState({
     title: "",
@@ -27,15 +33,15 @@ const LocalBoxForm = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventtDefault();
+    e.preventDefault();
     add(input);
     setInput({ title: "", amount: "", type: "", category: "" });
   };
 
   return (
     <>
-      <Container>
-        <h1>Expensses Tracker</h1>
+      <Container className="mt-5 border border-black rounded-5 p-5 mb-5">
+        <h1 className="text-center mb-4">Expenses Tracker</h1>
         <Form onSubmit={handleSubmit}>
           <Row className="justify-content-center align-items-center">
             <Col md={6}>
@@ -43,7 +49,7 @@ const LocalBoxForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
-                <Form.Label className="text-white">Title</Form.Label>
+                <Form.Label className="text-black">Title</Form.Label>
                 <Form.Control
                   name="title"
                   type="text"
@@ -57,7 +63,7 @@ const LocalBoxForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
-                <Form.Label className="text-white">Title</Form.Label>
+                <Form.Label className="text-black">Amount</Form.Label>
                 <Form.Control
                   name="amount"
                   type="number"
@@ -71,7 +77,7 @@ const LocalBoxForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput3"
               >
-                <span className="text-white me-2">Credit</span>
+                <span className="text-black me-2">Credit</span>
                 <input
                   id="credit"
                   type="radio"
@@ -85,7 +91,7 @@ const LocalBoxForm = () => {
                 className="mb-4"
                 controlId="exampleForm.ControlInput4"
               >
-                <span className="text-white me-2">Debit</span>
+                <span className="text-black me-2">Debit</span>
                 <input
                   type="radio"
                   id="debit"
@@ -99,7 +105,7 @@ const LocalBoxForm = () => {
                 className="mb-4"
                 controlId="exampleForm.ControlInput5"
               >
-                <span className="text-white me-2">Category</span>
+                <span className="text-black me-2">Category</span>
                 <select
                   name="category"
                   id="category"
@@ -114,7 +120,12 @@ const LocalBoxForm = () => {
                   <option value="shopping">Shopping</option>
                 </select>
               </Form.Group>
-              <Button variant="success">Add</Button>
+              <Button variant="success" type="submit" className="w-75">
+                Add
+              </Button>
+            </Col>
+            <Col md={6}>
+              <LocalBoxData />
             </Col>
           </Row>
         </Form>
